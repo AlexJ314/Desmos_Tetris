@@ -22,4 +22,4 @@ Reset: r
 
 These controls can be changed through "desmos tetris.js" > "function input(event)"
 
-Play online right now: https://raw.githack.com/AlexJ314/Desmos_Tetris/New%20Desmos%20Tetris.html
+Play online right now: https://raw.githack.com/AlexJ314/Desmos_Tetris/main/New%20Desmos%20Tetris.html
