@@ -4,6 +4,8 @@
     Increase speed correctly
     Adjust rotation fall delay
     Safety on left and right
+    Separate tick speed for setTimeout on do_loop (rotation delay)
+    Local variables instead of gameboard. for do_loop
 */
 
 var game_board; //Global variable, the game
