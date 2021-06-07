@@ -3,6 +3,7 @@
     Increase speed correctly
     Safety on left and right
     Measure device orientation / tilt for control on mobile
+    On mobile: When device is tilted, act on motion event but only measure orientation
 */
 
 var game_board; //Global variable, the game
