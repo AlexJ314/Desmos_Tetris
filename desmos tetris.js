@@ -1,8 +1,6 @@
 /*TODO:
-    Display next 2 blocks
     Increase score
     Increase speed correctly
-    Adjust rotation fall delay
     Safety on left and right
     Measure device orientation / tilt for control on mobile
 */
@@ -24,12 +22,14 @@ class Game {
         this.calc_setup(); //Make the calculator display
         this.blocks = []; //All created blocks
         this.active = false; //Currently active block
+        this.next = false;
         this.score = 0; //Player score
         this.loop = [0, 0]; //Variables associated with time delay and game tick
         this.tick = 1000; //Game tick speed (milliseconds)
         this.stopped = false; //Is the game over?
         this.paused = false; //Is the game paused?
         this.new_block(); //Make your first block
+        this.new_block(); //And second block
         this.do_loop(); //Start the game
     }
 
@@ -46,16 +46,16 @@ class Game {
 
     calc_setup() {
         //This is the Desmos interface
-        var width = Math.max(10/(6.625)*this.height, 1.3*this.width); //Make the calculator grid lines square
-        var height = this.height; //Only see the top and bottom the the board
-        var spacing = 0.1*width;
-        this.calculator.setMathBounds({left: -spacing, right: width-spacing, bottom: 0, top: height});
+        this.calc_width = Math.max(10/(6.625)*this.height, 1.3*this.width); //Make the calculator grid lines square
+        this.calc_height = this.height - 0.1; //Only see the top and bottom the the board
+        this.calc_spacing = 0.1*this.calc_width;
+        this.calculator.setMathBounds({left: -this.calc_spacing, right: this.calc_width-this.calc_spacing, bottom: 0, top: this.calc_height});
         this.calculator.setExpression({id: "Width", latex: "W="+this.width, sliderBounds: {min: 4, max: 1000, step: 1}});
         this.calculator.setExpression({id: "Height", latex: "H="+this.height, sliderBounds: {min: 4, max: 1000, step: 1}});
-        this.calculator.setExpression({id: "Left", latex: "x\\le0\\left\\{y\\ge0\\right\\}\\left\\{y\\le"+height+"\\right\\}", color: '#000000'});
-        this.calculator.setExpression({id: "Right", latex: "x\\ge"+this.width+"\\left\\{y\\ge0\\right\\}\\left\\{y\\le"+height+"\\right\\}", color: '#000000'});
+        this.calculator.setExpression({id: "Left", latex: "x\\le0\\left\\{y\\ge0\\right\\}\\left\\{y\\le"+this.calc_height+"\\right\\}", color: '#000000'});
+        this.calculator.setExpression({id: "Right", latex: "x\\ge"+this.width+"\\left\\{y\\ge0\\right\\}\\left\\{y\\le"+this.calc_height+"\\right\\}", color: '#000000'});
         this.calculator.setExpression({id: "Bottom", latex: "y\\le0", color: '#000000'});
-        this.calculator.setExpression({id: "Top", latex: "y\\ge"+height, color: '#000000'});
+        this.calculator.setExpression({id: "Top", latex: "y\\ge"+this.calc_height, color: '#000000'});
     }
 
     new_block() {
@@ -92,9 +92,26 @@ class Game {
                 game_board.grid[this.active.loc[i][0]][this.active.loc[i][1]] = this.active.id[i];
             }
         }
-        this.active = shape; //The newly activate piece (Not saved to grid until placed)
-        this.blocks.push(this.active); //All created blocks
-        this.check_line(); //Can we clear a line?
+
+        this.active = this.next; //The newly activate piece (Not saved to grid until placed)
+        if (this.active) {
+            for(var i=0; i<this.active.loc.length; i++) { //Unmove the active piece
+                this.active.loc[i][0] -= (this.width / 2 + 4);
+                this.active.loc[i][1] += this.height / 2;
+            }
+            this.active.draw(); //Draw updates
+            this.blocks.push(this.active); //All created blocks
+            this.check_line(); //Can we clear a line?
+        }
+
+        this.next = shape; //The next piece
+        if (this.next) {
+            for(i=0; i<this.next.loc.length; i++) { //Move the next piece
+                this.next.loc[i][0] += (this.width / 2 + 4);
+                this.next.loc[i][1] -= this.height / 2;
+            }
+            this.next.draw(); //Draw updates
+        }
     }
 
     fall() {
@@ -105,11 +122,15 @@ class Game {
         }
     }
 
+    clear_loop() {
+        clearTimeout(this.loop[0]); //Clear all loops
+        clearInterval(this.loop[1]); //What above said
+    }
+
     do_loop(new_tick=this.tick) {
         //How to do the game tick
         this.tick = new_tick;
-        clearTimeout(this.loop[0]); //Make sure this is the only loop running
-        clearInterval(this.loop[1]); //What above said
+        this.clear_loop();
         game_board.loop[0] = setTimeout(function() { //Now go ahead and set up the tick
             game_board.loop[1] = setInterval(function() {game_board.fall();}, game_board.tick);
         }, 0.5*game_board.tick);
@@ -126,6 +147,7 @@ class Game {
                 }
             }
             if (clear) {
+                this.clear_loop(); //Buy some time for lag
                 this.clear_line(row); //Clear the line (visible)
                 this.update_fall(row); //Lower the blocks (invisible)
                 this.update_locs(row); //Tell the blocks they were lowered (invisible)
@@ -187,8 +209,7 @@ class Game {
 
     gameover() {
         //How to end the game
-        clearTimeout(this.loop[0]);
-        clearInterval(this.loop[1]);
+        this.clear_loop();
         window.alert("Game Over");
         this.stopped = true;
     }
@@ -196,20 +217,15 @@ class Game {
     reset() {
         //Reset the game
         //Clear tick
-        clearTimeout(this.loop[0]);
-        clearInterval(this.loop[1]);
-
-        //Clear all blocks
-        for(let i=0; i<this.blocks.length; i++) {
-            for(let j=0; j<this.blocks[i].id.length; j++) {
-                this.calculator.removeExpression({id: this.blocks[i].id[j]});
-            }
-        }
+        this.clear_loop();
 
         //Set dimentions
         var expr = this.calculator.expressionAnalysis;
         this.width = expr.Width.evaluation.value; //Width from slider
         this.height = expr.Height.evaluation.value; //Height from slider
+        
+        //Clear all blocks
+        this.calculator.removeExpressions(this.calculator.getExpressions());
 
         //Finish setup
         this.setup();
