@@ -548,8 +548,11 @@ function mobile() {
 function deviceOrientationHandler(event) {
     //Handle mobile orientation
     console.log(event);
-    var g = event.gamma;
-    var b = event.beta;
+    var g = event.gamma; //Set phone like plate and spin
+    var b = event.beta; //Tilt side to side
+    var a = event.alpha; //Tilt up and down
+    var d = new Date();
+    var time = d.getTime();
     if (!game_board.paused && !game_board.stopped) {
         if (Math.abs(g) > 25) {
             if (g < 0) {
@@ -558,7 +561,7 @@ function deviceOrientationHandler(event) {
                 game_board.active.left();
             }
         }
-        if (Math.abs(b) > 25) {
+        if (Math.abs(a) > 25 && time%50 == 0) {
             if (b > 0) {
                 game_board.active.rotate();
             }
