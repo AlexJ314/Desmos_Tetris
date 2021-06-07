@@ -2,6 +2,7 @@
     Increase score
     Increase speed correctly
     Safety on left and right
+    Rotation delay (no infinite spin)
     Measure device orientation / tilt for control on mobile
     On mobile: When device is tilted, act on motion event but only measure orientation
 */
