@@ -538,6 +538,27 @@ class LBlock extends Block {
     }
 }
 
+function mobile() {
+    //Set up for mobile use
+    if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion', deviceMotionHandler);
+    }
+}
+
+function deviceMotionHandler(event) {
+    //Handle mobile motion
+    var rate = event.rotationRate.gamma;
+    if (!game_board.paused && !game_board.stopped) {
+        if (Math.abs(rate) > 5) {
+            if (rate > 0) {
+                game_board.active.right();
+            } else {
+                game_board.active.left();
+            }
+        }
+    }
+}
+
 function input(event) {
     //Handles key presses
     if (event.key=="r") { //Reset game
@@ -574,6 +595,7 @@ function input(event) {
 
 function main() {
     //Do stuff
+    mobile();
     game_board = new Game(); //The game (Global)
     game_board.setup(); //Set up Game
 }
