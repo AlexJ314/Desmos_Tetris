@@ -4,8 +4,6 @@
     Increase speed correctly
     Adjust rotation fall delay
     Safety on left and right
-    Separate tick speed for setTimeout on do_loop (rotation delay)
-    Local variables instead of gameboard. for do_loop
     Measure device orientation / tilt for control on mobile
 */
 
@@ -107,14 +105,14 @@ class Game {
         }
     }
 
-    do_loop(new_tick=this.tick, rot_tick=this.tick) {
+    do_loop(new_tick=this.tick) {
         //How to do the game tick
         this.tick = new_tick;
         clearTimeout(this.loop[0]); //Make sure this is the only loop running
         clearInterval(this.loop[1]); //What above said
-        game_board.loop[0] = setTimeout(function(rot_tick) { //Now go ahead and set up the tick
-            game_board.loop[1] = setInterval(function(rot_tick) {game_board.fall();}, game_board.tick);
-        }, rot_tick);
+        game_board.loop[0] = setTimeout(function() { //Now go ahead and set up the tick
+            game_board.loop[1] = setInterval(function() {game_board.fall();}, game_board.tick);
+        }, 0.5*game_board.tick);
     }
 
     check_line() {
