@@ -549,8 +549,8 @@ function deviceMotionHandler(event) {
     //Handle mobile motion
     var rate = event.rotationRate.gamma;
     if (!game_board.paused && !game_board.stopped) {
-        if (Math.abs(rate) > 5) {
-            if (rate > 0) {
+        if (Math.abs(rate) > 25) {
+            if (rate < 0) {
                 game_board.active.right();
             } else {
                 game_board.active.left();
