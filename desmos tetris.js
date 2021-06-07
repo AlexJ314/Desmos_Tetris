@@ -547,13 +547,19 @@ function mobile() {
 
 function deviceMotionHandler(event) {
     //Handle mobile motion
-    var rate = event.rotationRate.gamma;
+    var g_rate = event.rotationRate.gamma;
+    var b_rate = event.rotationRate.beta;
     if (!game_board.paused && !game_board.stopped) {
-        if (Math.abs(rate) > 25) {
-            if (rate < 0) {
+        if (Math.abs(g_rate) > 25) {
+            if (g_rate < 0) {
                 game_board.active.right();
             } else {
                 game_board.active.left();
+            }
+        }
+        if (Math.abs(b_rate) > 25) {
+            if (b_rate < 0) {
+                game_board.active.rotate();
             }
         }
     }
