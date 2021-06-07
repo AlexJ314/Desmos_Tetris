@@ -50,6 +50,7 @@ class Game {
         this.calc_height = this.height - 0.1; //Only see the top and bottom the the board
         this.calc_spacing = 0.1*this.calc_width;
         this.calculator.setMathBounds({left: -this.calc_spacing, right: this.calc_width-this.calc_spacing, bottom: 0, top: this.calc_height});
+        this.update_score();
         this.calculator.setExpression({id: "Width", latex: "W="+this.width, sliderBounds: {min: 4, max: 1000, step: 1}});
         this.calculator.setExpression({id: "Height", latex: "H="+this.height, sliderBounds: {min: 4, max: 1000, step: 1}});
         this.calculator.setExpression({id: "Left", latex: "x\\le0\\left\\{y\\ge0\\right\\}\\left\\{y\\le"+this.calc_height+"\\right\\}", color: '#000000'});
@@ -112,6 +113,7 @@ class Game {
             }
             this.next.draw(); //Draw updates
         }
+        this.update_score();
     }
 
     fall() {
@@ -229,6 +231,10 @@ class Game {
 
         //Finish setup
         this.setup();
+    }
+
+    update_score() {
+        return;
     }
 }
 
