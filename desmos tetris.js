@@ -540,25 +540,26 @@ class LBlock extends Block {
 
 function mobile() {
     //Set up for mobile use
-    if (window.DeviceMotionEvent) {
-        window.addEventListener('devicemotion', deviceMotionHandler);
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', deviceOrientationHandler);
     }
 }
 
-function deviceMotionHandler(event) {
-    //Handle mobile motion
-    var g_rate = event.rotationRate.gamma;
-    var b_rate = event.rotationRate.beta;
+function deviceOrientationHandler(event) {
+    //Handle mobile orientation
+    console.log(event);
+    var g = event.gamma;
+    var b = event.beta;
     if (!game_board.paused && !game_board.stopped) {
-        if (Math.abs(g_rate) > 25) {
-            if (g_rate < 0) {
+        if (Math.abs(g) > 25) {
+            if (g < 0) {
                 game_board.active.right();
             } else {
                 game_board.active.left();
             }
         }
-        if (Math.abs(b_rate) > 25) {
-            if (b_rate < 0) {
+        if (Math.abs(b) > 25) {
+            if (b > 0) {
                 game_board.active.rotate();
             }
         }
