@@ -234,7 +234,7 @@ class Game {
     }
 
     update_score() {
-        return;
+        this.calculator.setExpression({id: "Score", latex: "S_{core}="+this.score, hidden: true});
     }
 }
 
