@@ -560,8 +560,8 @@ function deviceOrientationHandler(event) {
                 game_board.active.left();
             }
         }
-        if (Math.abs(b) > 25) {
-            if (b > 0) {
+        if (Math.abs(a) > 25) {
+            if (a > 0) {
                 game_board.active.rotate();
             }
         }
