@@ -545,13 +545,16 @@ function mobile() {
     if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', deviceOrientationHandler);
     }
+    if (window.DeviceMotionEvent) {
+        window.addEventListener('devicemotion', deviceMotionHandler);
+    }
 }
 
 function deviceOrientationHandler(event) {
     //Handle mobile orientation
     var g = event.gamma; //Tilt side to side
-    var b = event.beta; //Spin like a plate
-    var a = event.alpha; //Tilt up and down
+    var b = event.beta; //Tilt up and down
+    var a = event.alpha; //Spin like a plate
     if (!game_board.paused && !game_board.stopped) {
         if (Math.abs(g) > 25) {
             if (g < 0) {
@@ -560,9 +563,19 @@ function deviceOrientationHandler(event) {
                 game_board.active.left();
             }
         }
-        if (Math.abs(a) > 25) {
-            if (a > 0) {
+    }
+}
+
+function deviceMotionHandler(event) {
+    var g = event.rotationRate.gamma; //Tilt side to side
+    var b = event.rotationRate.beta; //Tilt up and down
+    var a = event.rotationRate.alpha; //Spin like a plateTilt up and down
+    if (!game_board.paused && !game_board.stopped) {
+        if (Math.abs(b) > 100) {
+            if (b > 0) {
                 game_board.active.rotate();
+            } else {
+                game_board.active.down();
             }
         }
     }
