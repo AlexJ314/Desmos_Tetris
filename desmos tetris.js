@@ -617,7 +617,7 @@ function input(event) {
 
 function main() {
     //Do stuff
-    mobile();
+    //mobile();
     game_board = new Game(); //The game (Global)
     game_board.setup(); //Set up Game
 }
