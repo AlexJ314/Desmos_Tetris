@@ -557,7 +557,7 @@ function deviceOrientationHandler(event) {
     var a = event.alpha; //Spin like a plate
     if (!game_board.paused && !game_board.stopped) {
         if (Math.abs(g) > 25) {
-            if (g < 0) {
+            if (g > 0) {
                 game_board.active.right();
             } else {
                 game_board.active.left();
