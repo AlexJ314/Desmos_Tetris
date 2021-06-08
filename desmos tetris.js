@@ -556,14 +556,14 @@ function deviceOrientationHandler(event) {
     var d = new Date();
     var time = d.getTime();
     if (!game_board.paused && !game_board.stopped) {
-        if (Math.abs(g) > 25 && time%50 == 0) {
+        if (Math.abs(g) > 25) {
             if (g < 0) {
                 game_board.active.right();
             } else {
                 game_board.active.left();
             }
         }
-        if (Math.abs(a) > 25 && time%100 == 0) {
+        if (Math.abs(a) > 25) {
             if (b > 0) {
                 game_board.active.rotate();
             }
