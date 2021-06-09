@@ -27,7 +27,8 @@ class Game {
         this.next = false;
         this.score = 0; //Player score
         this.loop = [0, 0]; //Variables associated with time delay and game tick
-        this.tick = 1000; //Game tick speed (milliseconds)
+        this.original_tick = 1000; //Initial game tick
+        this.tick = this.original_tick; //Game tick speed (milliseconds)
         this.stopped = false; //Is the game over?
         this.paused = false; //Is the game paused?
         this.new_block(); //Make your first block
@@ -156,7 +157,7 @@ class Game {
                 this.update_fall(row); //Lower the blocks (invisible)
                 this.update_locs(row); //Tell the blocks they were lowered (invisible)
                 this.redraw(); //Redraw the blocks at their new locations (visible)
-                this.do_loop(Math.max(50, this.tick*0.99)); //Increase game speed
+                this.do_loop(Math.max(100, Math.floor(this.tick*0.985))); //Increase game speed
                 row--; //We just deleted a row, it might need to be cleared again
             }
         }
@@ -182,7 +183,7 @@ class Game {
 
     update_locs(row) {
         //Tell the blocks they moved
-        for(let i=0; i<this.blocks.length; i++) {
+        for(let i=0; i<this.blocks.length-1; i++) { //Don't update the active block
             for(let j=0; j<this.blocks[i].loc.length; j++) {
                 if (this.blocks[i].loc[j][1] > row) { //If the block is above the cleared line, fall
                     this.blocks[i].loc[j][1] -= 1;
